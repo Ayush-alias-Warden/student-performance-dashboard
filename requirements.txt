@@ -1,0 +1,6 @@
+# Core dependencies for Student Performance & Study-Hours Dashboard
+Flask>=3.0.0
+pandas>=2.0.0
+numpy>=1.24.0
+matplotlib>=3.8.0
+gunicorn>=21.2.0

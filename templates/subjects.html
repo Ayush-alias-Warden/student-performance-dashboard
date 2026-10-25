@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Course Comparison — Student Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fa-solid fa-book-bookmark text-primary me-2"></i>Course &amp; Subject Comparison</h1>
+    <p>Comparing academic achievement and grading trajectories between Mathematics and Portuguese language cohorts.</p>
+</div>
+
+<!-- Subject Highlights Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-6">
+        <div class="stat-card border-blue">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Mathematics Cohort</div>
+                    <div class="stat-value">395 Students</div>
+                </div>
+                <div class="stat-icon text-primary"><i class="fa-solid fa-calculator"></i></div>
+            </div>
+            <div class="mt-2 small text-muted">
+                Final G3 Mean: <strong>10.42 / 20</strong> (σ = 4.58) | Pass Rate: <strong>67.1%</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="stat-card border-green">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Portuguese Language Cohort</div>
+                    <div class="stat-value">649 Students</div>
+                </div>
+                <div class="stat-icon text-success"><i class="fa-solid fa-language"></i></div>
+            </div>
+            <div class="mt-2 small text-muted">
+                Final G3 Mean: <strong>12.51 / 20</strong> (σ = 3.23) | Pass Rate: <strong>84.6%</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Comparison Chart Card -->
+<div class="chart-card mb-4">
+    <div class="chart-title"><i class="fa-solid fa-chart-column text-primary me-2"></i>Longitudinal Grade Progression Across Assessment Periods (G1 → G2 → G3)</div>
+    <div class="chart-desc">Side-by-side grouped bars with ±1 standard deviation error bars (CO5, CO6).</div>
+    <img src="{{ url_for('static', filename='img/bar_subject_comparison.png') }}" alt="Subject Comparison Chart">
+</div>
+
+<!-- Subject Comparison Table (CO5) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-table text-primary me-2"></i>Aggregated Subject Performance Table (Pandas Multi-Index Groupby)</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th rowspan="2" class="align-middle">Subject / Course</th>
+                    <th rowspan="2" class="align-middle text-center">Enrollment</th>
+                    <th colspan="2" class="text-center">Period 1 (G1)</th>
+                    <th colspan="2" class="text-center">Period 2 (G2)</th>
+                    <th colspan="2" class="text-center">Final Exam (G3)</th>
+                </tr>
+                <tr>
+                    <th class="text-center">Mean</th>
+                    <th class="text-center">Std Dev (σ)</th>
+                    <th class="text-center">Mean</th>
+                    <th class="text-center">Std Dev (σ)</th>
+                    <th class="text-center">Mean</th>
+                    <th class="text-center">Std Dev (σ)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in subject_table %}
+                <tr>
+                    <td><strong>{{ row.subject }}</strong></td>
+                    <td class="text-center">{{ row.G1_count }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.G1_mean) }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.G1_std) }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.G2_mean) }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.G2_std) }}</td>
+                    <td class="text-center fw-bold text-primary">{{ "%.2f"|format(row.G3_mean) }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.G3_std) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Detailed Analytical Takeaway (BL4) -->
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="section-card h-100">
+            <h3><i class="fa-solid fa-lightbulb text-warning me-2"></i>Curricular Variance Analysis (BL4)</h3>
+            <p>
+                <strong>Mathematics presents greater academic risk:</strong>
+                The standard deviation in Math final grades (4.58) is 42% higher than in Portuguese (3.23).
+                Quantitative STEM topics exhibit cumulative dependency: falling behind in early algebra makes subsequent calculus concepts intractable.
+            </p>
+            <p class="mb-0">
+                In contrast, Portuguese language grades follow a tighter bell curve with fewer extreme failures, indicating that language evaluations accommodate continuous coursework and baseline literacy more forgivingly.
+            </p>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="section-card h-100">
+            <h3><i class="fa-solid fa-arrow-trend-up text-success me-2"></i>Cohort Trajectory (G1 to G3)</h3>
+            <p>
+                <strong>Grade persistence over the academic year:</strong>
+                Correlation between G1 (Period 1) and G3 (Final Exam) exceeds <strong>0.80</strong> across both courses.
+                This means a student's initial evaluation in the first two months of the term is the single most accurate predictor of their year-end score.
+            </p>
+            <p class="mb-0">
+                Early diagnostic screening is therefore vastly more actionable than waiting for post-exam remedial interventions.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

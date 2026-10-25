@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Overview — Student Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fa-solid fa-chart-pie text-primary me-2"></i>Executive Overview</h1>
+    <p>Comprehensive performance investigation across 1,044 secondary school student records (Mathematics & Portuguese).</p>
+</div>
+
+<!-- Stat Cards Row -->
+<div class="row g-3 mb-4">
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card border-blue">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Total Students</div>
+                    <div class="stat-value">{{ stats.count }}</div>
+                </div>
+                <div class="stat-icon text-primary"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <small class="text-muted">395 Math + 649 Portuguese</small>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card border-green">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Overall Pass Rate</div>
+                    <div class="stat-value">{{ pass_rate }}%</div>
+                </div>
+                <div class="stat-icon text-success"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <small class="text-muted">G3 ≥ 10 on 20-point scale</small>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card border-teal">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Mean Final Grade (G3)</div>
+                    <div class="stat-value">{{ "%.2f"|format(stats.mean) }}</div>
+                </div>
+                <div class="stat-icon text-info"><i class="fa-solid fa-award"></i></div>
+            </div>
+            <small class="text-muted">Median: {{ "%.1f"|format(stats.median) }} | Std: {{ "%.2f"|format(stats.std) }}</small>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6">
+        <div class="stat-card border-orange">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-label">Study-G3 Correlation</div>
+                    <div class="stat-value">+{{ "%.3f"|format(stats.studytime_g3_correlation) }}</div>
+                </div>
+                <div class="stat-icon text-warning"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            </div>
+            <small class="text-muted">Pearson r (Weak positive association)</small>
+        </div>
+    </div>
+</div>
+
+<!-- Highlight Insight Box -->
+<div class="insight-box">
+    <i class="fa-solid fa-circle-info text-primary me-2"></i>
+    <strong>Key Analytical Finding (BL4/BL5):</strong>
+    There is a statistically observable positive association between reported weekly study time and final assessment score (<em>r</em> = +{{ "%.3f"|format(stats.studytime_g3_correlation) }}).
+    However, study time accounts for only ~2.6% of the variance (<em>R</em><sup>2</sup> ≈ 0.026).
+    The positive trend <strong>survives outlier removal</strong> (strengthening to <em>r</em> = +0.189 when excluding 53 exam dropouts).
+    Crucially, <strong>correlation does not establish causation</strong>; foundational prior attainment (G1/G2) and attendance play dominant roles.
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="chart-title"><i class="fa-solid fa-chart-column text-primary me-2"></i>Final Assessment Score Distribution</div>
+            <div class="chart-desc">Histogram showing G3 frequency, normal bell curve, mean/median lines, and exam dropouts spike at 0.</div>
+            <img src="{{ url_for('static', filename='img/hist_score_distribution.png') }}" alt="G3 Score Distribution">
+            <div class="mt-3 small text-muted bg-light p-2 rounded">
+                <strong>BL2 Interpretation:</strong> Continuous 20-point scale. Notice the pronounced spike at G3=0 representing 53 students who withdrew before taking the final exam.
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="chart-title"><i class="fa-solid fa-bars-staggered text-success me-2"></i>Letter Grade Breakdown (A to F)</div>
+            <div class="chart-desc">Aggregation into standard academic tiers: A (16-20), B (14-15), C (12-13), D (10-11), F (0-9).</div>
+            <img src="{{ url_for('static', filename='img/bar_grade_bands.png') }}" alt="Letter Grade Breakdown">
+            <div class="mt-3 small text-muted bg-light p-2 rounded">
+                <strong>CO5 / BL2 Interpretation:</strong> Derived through Pandas categorical engineering. Grades C and D make up the majority of passing scores.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Section: Course Outcomes & Pipeline Structure -->
+<div class="section-card">
+    <h3><i class="fa-solid fa-layer-group text-primary me-2"></i>Course Outcomes & Bloom-Level Evidence Matrix</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th style="width: 15%;">Course Outcome</th>
+                    <th style="width: 25%;">Bloom Level</th>
+                    <th>Demonstrated Implementation in this Project</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="badge bg-primary">CO1: Control Flow</span></td>
+                    <td><strong>BL3 (Implement)</strong></td>
+                    <td>Grade banding conditionals (<code>if/elif/else</code>), grade validation loops, student ID generator, and data hygiene checks in <code>analysis.py</code>.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-secondary">CO2: Data Structures & File I/O</span></td>
+                    <td><strong>BL2 (Explain) &amp; BL3</strong></td>
+                    <td>Parsing raw semicolon-separated CSVs (<code>pd.read_csv</code>), dictionary representations, and structured JSON export (<code>export_summary_json</code>).</td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-success">CO3: Classes &amp; Special Methods</span></td>
+                    <td><strong>BL2, BL5 (Evaluate)</strong></td>
+                    <td><code>StudentRecord</code> and <code>StudentCohort</code> implementing <code>__init__</code>, <code>__len__</code>, <code>__getitem__</code>, <code>__iter__</code>, <code>__repr__</code>, and <code>__eq__</code> with documented OOP justification.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-warning text-dark">CO4: NumPy Arrays</span></td>
+                    <td><strong>BL3, BL4 (Analyse)</strong></td>
+                    <td>Array conversion, <code>np.mean</code>, <code>np.median</code>, <code>np.std</code>, <code>np.percentile</code>, <code>np.corrcoef</code>, regression polynomial fitting, and vectorised boolean masks.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-info text-dark">CO5: Pandas</span></td>
+                    <td><strong>BL3, BL4</strong></td>
+                    <td>DataFrame concatenation of Math and Portuguese datasets, feature engineering (letter grades, labels), and multi-column <code>groupby</code> aggregations.</td>
+                </tr>
+                <tr>
+                    <td><span class="badge bg-danger">CO6: Matplotlib</span></td>
+                    <td><strong>BL2, BL4, BL5</strong></td>
+                    <td>Publication-quality scatter plots, score histograms, boxplots, grouped bar charts, and outlier sensitivity panels with rigorous interpretations.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Failures & Outliers — Student Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fa-solid fa-triangle-exclamation text-danger me-2"></i>Failure Case &amp; Outlier Evaluation</h1>
+    <p>In-depth analytical inspection of academic failure profiles, exam dropouts, and comparative evaluation of outlier detection methodologies.</p>
+</div>
+
+<!-- Failure Profile Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card border-red">
+            <div class="stat-label">Exam Absentees / Zero-Scorers (G3 = 0)</div>
+            <div class="stat-value text-danger">{{ failures.zero_score_count }} Students</div>
+            <small class="text-muted">38 Math + 15 Portuguese (Withdrawals/Absences)</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card border-orange">
+            <div class="stat-label">Severe Grade Decline (G3 ≤ G1 − 4)</div>
+            <div class="stat-value text-warning">{{ failures.big_drop_count }} Students</div>
+            <small class="text-muted">Significant negative trajectory during the school year</small>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card border-blue">
+            <div class="stat-label">Total Failing Students (G3 &lt; 10)</div>
+            <div class="stat-value">{{ failures.failing_profile.count }} Students</div>
+            <small class="text-muted">{{ "%.1f"|format(failures.failing_profile.count / 10.44) }}% of total enrolled cohort</small>
+        </div>
+    </div>
+</div>
+
+<!-- Failure vs Passing Cohort Comparison Table (BL4) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-users-slash text-danger me-2"></i>Risk Profile Analysis: Failing vs. Passing Students (BL4)</h3>
+    <p class="text-muted">
+        Comparing underlying behavioral and environmental predictors between students who failed (G3 &lt; 10) and students who passed (G3 ≥ 10).
+    </p>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Predictor / Attribute</th>
+                    <th class="text-center">Failing Students (N={{ failures.failing_profile.count }})</th>
+                    <th class="text-center">Passing Students (N={{ failures.passing_profile.count }})</th>
+                    <th class="text-center">Relative Difference</th>
+                    <th>Analytical Interpretation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>School Absences (Mean days)</strong></td>
+                    <td class="text-center text-danger fw-bold">{{ "%.2f"|format(failures.failing_profile.mean_absences) }} days</td>
+                    <td class="text-center text-success fw-bold">{{ "%.2f"|format(failures.passing_profile.mean_absences) }} days</td>
+                    <td class="text-center text-danger">+{{ "%.2f"|format(failures.failing_profile.mean_absences - failures.passing_profile.mean_absences) }} days</td>
+                    <td class="small">Chronic absenteeism directly severs students from classroom instruction, making failure significantly more probable.</td>
+                </tr>
+                <tr>
+                    <td><strong>Weekly Study Time Tier (1 to 4)</strong></td>
+                    <td class="text-center">{{ "%.2f"|format(failures.failing_profile.mean_studytime) }}</td>
+                    <td class="text-center text-success">{{ "%.2f"|format(failures.passing_profile.mean_studytime) }}</td>
+                    <td class="text-center text-danger">-{{ "%.2f"|format(failures.passing_profile.mean_studytime - failures.failing_profile.mean_studytime) }}</td>
+                    <td class="small">Passing students report notably higher dedicated weekly study time.</td>
+                </tr>
+                <tr>
+                    <td><strong>Mother's Education Level (Medu, 0–4)</strong></td>
+                    <td class="text-center">{{ "%.2f"|format(failures.failing_profile.mean_Medu) }}</td>
+                    <td class="text-center text-success">{{ "%.2f"|format(failures.passing_profile.mean_Medu) }}</td>
+                    <td class="text-center text-danger">-{{ "%.2f"|format(failures.passing_profile.mean_Medu - failures.failing_profile.mean_Medu) }}</td>
+                    <td class="small">Higher maternal educational attainment correlates strongly with home academic reinforcement and resources.</td>
+                </tr>
+                <tr>
+                    <td><strong>Father's Education Level (Fedu, 0–4)</strong></td>
+                    <td class="text-center">{{ "%.2f"|format(failures.failing_profile.mean_Fedu) }}</td>
+                    <td class="text-center text-success">{{ "%.2f"|format(failures.passing_profile.mean_Fedu) }}</td>
+                    <td class="text-center text-danger">-{{ "%.2f"|format(failures.passing_profile.mean_Fedu - failures.failing_profile.mean_Fedu) }}</td>
+                    <td class="small">Parallels maternal education in providing family academic structure.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Outlier Methodology Evaluation (BL5) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-scale-balanced text-primary me-2"></i>Outlier Detection Evaluation: Z-Score vs. Tukey's IQR Method (BL5)</h3>
+    <p class="text-muted">
+        A core requirement of Bloom Level 5 (Evaluation) is assessing two competing algorithmic designs against clear statistical criteria.
+    </p>
+
+    <div class="row g-4 mb-3">
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light">
+                <h5 class="fw-bold text-primary"><i class="fa-solid fa-chart-line me-2"></i>Method 1: Standardized Z-Score (|z| &gt; 2.0)</h5>
+                <p class="small text-muted mb-2">Calculates distance from mean scaled by standard deviation: <code>z = (x − μ) / σ</code>.</p>
+                <ul class="small mb-0">
+                    <li><strong>Outliers Flagged:</strong> {{ outlier_eval.zscore_count }} records</li>
+                    <li><strong>Distribution Assumption:</strong> Assumes data is normally distributed (Gaussian).</li>
+                    <li><strong>Masking Vulnerability:</strong> The mean (μ) and standard deviation (σ) are themselves pulled by extreme outliers, which artificially inflates σ and masks borderline anomalies.</li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="p-3 border rounded bg-light">
+                <h5 class="fw-bold text-success"><i class="fa-solid fa-arrows-split-up-and-left me-2"></i>Method 2: Tukey's IQR Fences (1.5 × IQR)</h5>
+                <p class="small text-muted mb-2">Non-parametric fences: <code>Lower = Q1 − 1.5×IQR</code>, <code>Upper = Q3 + 1.5×IQR</code>.</p>
+                <ul class="small mb-0">
+                    <li><strong>Outliers Flagged:</strong> {{ outlier_eval.iqr_count }} records</li>
+                    <li><strong>Distribution Assumption:</strong> Non-parametric; makes <em>zero</em> distributional assumptions.</li>
+                    <li><strong>Resistant Estimators:</strong> Percentiles (Q1, Q3) are immune to extreme tail values, avoiding outlier masking.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive mb-3">
+        <table class="table table-bordered table-sm align-middle text-center">
+            <thead class="table-light">
+                <tr>
+                    <th>Metric</th>
+                    <th>Z-Score (|z| &gt; 2.0)</th>
+                    <th>Tukey's IQR (1.5 × IQR)</th>
+                    <th>Overlap (Both)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="text-start"><strong>Outliers Flagged</strong></td>
+                    <td><span class="badge bg-primary fs-6">{{ outlier_eval.zscore_count }}</span></td>
+                    <td><span class="badge bg-success fs-6">{{ outlier_eval.iqr_count }}</span></td>
+                    <td><span class="badge bg-dark fs-6">{{ outlier_eval.overlap_count }}</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="alert alert-primary mb-0">
+        <h6 class="fw-bold mb-1"><i class="fa-solid fa-gavel me-2"></i>Design Recommendation & Justification (BL5):</h6>
+        <p class="small mb-0">
+            {{ outlier_eval.interpretation }}
+            <strong>Recommendation:</strong> Tukey's IQR is definitively preferred for academic score data because bounded distributions (0 to 20) with dropout clusters violate the Gaussian symmetry demanded by the Z-score model.
+        </p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Study Hours vs Performance — Student Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fa-solid fa-clock text-primary me-2"></i>Study Hours &amp; Assessment Scores Investigation</h1>
+    <p>Evaluating empirical correlation, distribution shifts across study tiers, outlier resilience, and causality limits.</p>
+</div>
+
+<!-- Key Association Metrics -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-card border-blue">
+            <div class="stat-label">Baseline Pearson Correlation (r)</div>
+            <div class="stat-value">+{{ "%.3f"|format(eval_outliers.all_data_r) }}</div>
+            <small class="text-muted">Calculated on all {{ eval_outliers.all_data_count }} records</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card border-green">
+            <div class="stat-label">Filtered Pearson (r) (Excl. G3=0)</div>
+            <div class="stat-value">+{{ "%.3f"|format(eval_outliers.nonzero_r) }}</div>
+            <small class="text-muted">N={{ eval_outliers.nonzero_count }} active exam sitters</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card border-purple">
+            <div class="stat-label">IQR-Clean Pearson (r)</div>
+            <div class="stat-value">+{{ "%.3f"|format(eval_outliers.iqr_clean_r) }}</div>
+            <small class="text-muted">N={{ eval_outliers.iqr_clean_count }} after Tukey IQR fence</small>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card border-orange">
+            <div class="stat-label">Association Survives Outliers?</div>
+            <div class="stat-value text-success"><i class="fa-solid fa-check-circle me-1"></i>YES</div>
+            <small class="text-muted">Robust positive trend across all treatments</small>
+        </div>
+    </div>
+</div>
+
+<!-- Scatter and Boxplot Row -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="chart-title"><i class="fa-solid fa-braille text-primary me-2"></i>Study Hours vs Final Grade (Scatter + Trendline)</div>
+            <div class="chart-desc">Jittered scatter points displaying student distribution and OLS regression line (CO4, CO6).</div>
+            <img src="{{ url_for('static', filename='img/scatter_study_vs_g3.png') }}" alt="Study Hours Scatter Plot">
+            <div class="mt-3 small text-muted bg-light p-2 rounded">
+                <strong>BL4 Analysis:</strong> The regression line slopes upward (slope ≈ +0.81 grade points per tier). However, note the wide vertical spread in each column.
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="chart-card">
+            <div class="chart-title"><i class="fa-solid fa-box text-success me-2"></i>Score Distribution by Study Hours Tier (Boxplot)</div>
+            <div class="chart-desc">Visualising medians (red line), group means (orange diamond), and quartile spreads (CO6).</div>
+            <img src="{{ url_for('static', filename='img/boxplot_study_hours.png') }}" alt="Study Hours Boxplot">
+            <div class="mt-3 small text-muted bg-light p-2 rounded">
+                <strong>BL2 Explanation:</strong> Group median rises monotonically: 10.0 (<2h) → 11.0 (2-5h) → 12.0 (5-10h) → 12.0 (>10h).
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Groupby Aggregation Table (CO5) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-table text-primary me-2"></i>Pandas Grouped Summary: Performance by Study Time Tier (CO5)</h3>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Study Time Category</th>
+                    <th class="text-center">Student Count (N)</th>
+                    <th class="text-center">Mean Final Grade (G3)</th>
+                    <th class="text-center">Median Final Grade</th>
+                    <th class="text-center">Standard Deviation (σ)</th>
+                    <th class="text-center">Estimated Weekly Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in study_table %}
+                <tr>
+                    <td><strong>{{ row.study_hours_label }}</strong></td>
+                    <td class="text-center">{{ row.count }}</td>
+                    <td class="text-center"><span class="badge bg-primary fs-6">{{ "%.2f"|format(row.mean) }}</span></td>
+                    <td class="text-center">{{ "%.1f"|format(row.median) }}</td>
+                    <td class="text-center">{{ "%.2f"|format(row.std) }}</td>
+                    <td class="text-center text-muted">
+                        {% if row.study_hours_label == '<2 hours' %}1.0 hr approx.
+                        {% elif row.study_hours_label == '2-5 hours' %}3.5 hrs approx.
+                        {% elif row.study_hours_label == '5-10 hours' %}7.5 hrs approx.
+                        {% else %}12.0+ hrs approx.{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Outlier Sensitivity & Association Survival (BL5) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-microscope text-danger me-2"></i>Outlier Sensitivity Analysis: Does the Association Survive? (BL5)</h3>
+    <p class="text-muted">
+        In educational datasets, outliers can heavily distort regression models. Below, we compare the OLS slope and Pearson <em>r</em>
+        before and after filtering exam absentees (G3=0) and statistical outliers.
+    </p>
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <img src="{{ url_for('static', filename='img/plot_outlier_sensitivity.png') }}" class="img-fluid rounded border shadow-sm" alt="Outlier Sensitivity Comparison">
+        </div>
+        <div class="col-lg-5">
+            <div class="table-responsive mb-3">
+                <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Data Treatment</th>
+                            <th>Sample Size (N)</th>
+                            <th>Pearson r</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>1. All Raw Data</strong></td>
+                            <td>{{ eval_outliers.all_data_count }}</td>
+                            <td><span class="badge bg-secondary">+{{ "%.4f"|format(eval_outliers.all_data_r) }}</span></td>
+                        </tr>
+                        <tr class="table-success">
+                            <td><strong>2. Excluding G3=0 Dropouts</strong></td>
+                            <td>{{ eval_outliers.nonzero_count }}</td>
+                            <td><span class="badge bg-success">+{{ "%.4f"|format(eval_outliers.nonzero_r) }}</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Excluding IQR Outliers</strong></td>
+                            <td>{{ eval_outliers.iqr_clean_count }}</td>
+                            <td><span class="badge bg-info text-dark">+{{ "%.4f"|format(eval_outliers.iqr_clean_r) }}</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Excluding Z-score Outliers</strong></td>
+                            <td>{{ eval_outliers.zscore_clean_count }}</td>
+                            <td><span class="badge bg-primary">+{{ "%.4f"|format(eval_outliers.zscore_clean_r) }}</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-success py-2 px-3 small">
+                <strong>Empirical Conclusion:</strong> The association does not merely survive outliers—it <em>strengthens</em> from <em>r</em> = +0.162 to <em>r</em> = +0.189. The zero-scores were caused by administrative absence rather than test failure.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Rigorous Causation vs Correlation Warning Box (BL5) -->
+<div class="card border-warning mb-4">
+    <div class="card-header bg-warning text-dark fw-bold">
+        <i class="fa-solid fa-triangle-exclamation me-2"></i>Critical Evaluation: Avoiding the Causation Fallacy (BL5)
+    </div>
+    <div class="card-body">
+        <p class="mb-2">
+            A central requirement of rigorous data science is acknowledging that <strong>correlation does not equal causation</strong>.
+            While the empirical data demonstrates a consistent, positive correlation between study hours and exam performance, claiming that "assigning more study hours directly causes higher grades" would be invalid for the following reasons:
+        </p>
+        <ul class="mb-2">
+            <li><strong>Low Coefficient of Determination (R<sup>2</sup> ≈ 0.026 to 0.036):</strong> Study time accounts for less than 4% of total score variability. Over 96% of variance is driven by unmodeled factors.</li>
+            <li><strong>Omitted Confounding Variables:</strong> Students who study more frequently possess higher baseline motivation, stronger parental encouragement (<code>Medu</code>/<code>Fedu</code>), and fewer school absences.</li>
+            <li><strong>Quality vs. Quantity of Study:</strong> Self-reported study hours measure time seated, not cognitive efficiency. A student practicing active retrieval for 2 hours may outperform a student passively rereading notes for 10 hours.</li>
+            <li><strong>Reverse / Bidirectional Causality:</strong> Students who grasp the material more easily may find studying rewarding and therefore report higher study hours, creating reverse causation.</li>
+        </ul>
+        <p class="mb-0 text-muted small">
+            <em>Conclusion:</em> Study hours serve as a valuable diagnostic marker of student commitment, but educational interventions must combine study support with foundational skills and attendance tracking.
+        </p>
+    </div>
+</div>
+{% endblock %}

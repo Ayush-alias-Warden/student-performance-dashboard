@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+
+{% block title %}Student Records (OOP) — Student Performance Dashboard{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="fa-solid fa-users text-primary me-2"></i>Student Records &amp; OOP Architecture (CO3)</h1>
+    <p>Interactive student directory powered by the <code>StudentRecord</code> and <code>StudentCohort</code> domain classes.</p>
+</div>
+
+<!-- OOP Architecture Explanation Card (CO3, BL2, BL5) -->
+<div class="section-card mb-4">
+    <h3><i class="fa-solid fa-code text-success me-2"></i>Why Object-Oriented Architecture Beats Raw Dictionaries (BL5 Evaluation)</h3>
+    <p class="text-muted small">
+        In educational data analytics, working with raw dictionaries or bare rows creates silent type errors, duplicated grade-banding logic, and poor maintainability.
+        Below is the justification for our custom <code>StudentRecord</code> implementation:
+    </p>
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-light h-100">
+                <div class="fw-bold text-primary mb-1">1. Encapsulated Business Rules</div>
+                <div class="small text-muted">
+                    Properties like <code>.grade_letter</code>, <code>.is_passing</code>, and <code>.improvement</code> encapsulate Portuguese education rules (0-20 scale) in one authoritative class.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-light h-100">
+                <div class="fw-bold text-success mb-1">2. Special (Dunder) Methods</div>
+                <div class="small text-muted">
+                    <code>__len__</code> counts valid assessments; <code>__getitem__</code> allows dict-style key access; <code>__iter__</code> yields key-value tuples; <code>__repr__</code> produces readable debugging output.
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 border rounded bg-light h-100">
+                <div class="fw-bold text-warning text-dark mb-1">3. Collection Protocol (Cohort)</div>
+                <div class="small text-muted">
+                    <code>StudentCohort</code> encapsulates sequences of students with <code>len()</code>, slicing <code>[0:10]</code>, filtering by subject, and calculating cohort-wide pass rates.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter & Search Controls Form -->
+<div class="card p-3 mb-4 shadow-sm border-0 bg-white">
+    <form method="GET" action="{{ url_for('students') }}" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small fw-bold">Subject</label>
+            <select name="subject" class="form-select form-select-sm">
+                <option value="all" {% if current_subject == 'all' %}selected{% endif %}>All Subjects</option>
+                <option value="Mathematics" {% if current_subject == 'Mathematics' %}selected{% endif %}>Mathematics</option>
+                <option value="Portuguese" {% if current_subject == 'Portuguese' %}selected{% endif %}>Portuguese</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-bold">Grade Band</label>
+            <select name="grade" class="form-select form-select-sm">
+                <option value="all" {% if current_grade == 'all' %}selected{% endif %}>All Grades (A-F)</option>
+                <option value="A" {% if current_grade == 'A' %}selected{% endif %}>Grade A (16-20)</option>
+                <option value="B" {% if current_grade == 'B' %}selected{% endif %}>Grade B (14-15)</option>
+                <option value="C" {% if current_grade == 'C' %}selected{% endif %}>Grade C (12-13)</option>
+                <option value="D" {% if current_grade == 'D' %}selected{% endif %}>Grade D (10-11)</option>
+                <option value="F" {% if current_grade == 'F' %}selected{% endif %}>Grade F (0-9, Fail)</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label small fw-bold">Search Student ID</label>
+            <input type="text" name="search" class="form-control form-control-sm" placeholder="e.g. MAT-042 or POR-101" value="{{ search_query }}">
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+                <i class="fa-solid fa-filter me-1"></i> Apply Filter
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Results Count Summary -->
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="text-muted small">
+        Showing <strong>{{ records|length }}</strong> matching student records (Page {{ page }} of {{ total_pages }})
+    </div>
+    <div>
+        <a href="{{ url_for('students') }}" class="btn btn-sm btn-outline-secondary">Reset Filters</a>
+    </div>
+</div>
+
+<!-- Students Table -->
+<div class="table-container mb-4">
+    <table class="table table-hover align-middle">
+        <thead>
+            <tr>
+                <th>Student ID</th>
+                <th>Subject</th>
+                <th>Weekly Study Hours</th>
+                <th class="text-center">Period 1 (G1)</th>
+                <th class="text-center">Period 2 (G2)</th>
+                <th class="text-center">Final (G3)</th>
+                <th class="text-center">Letter Grade</th>
+                <th class="text-center">Improvement (G3−G1)</th>
+                <th class="text-center">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in records %}
+            <tr>
+                <td><code>{{ student.student_id }}</code></td>
+                <td>
+                    {% if student.data.subject == 'Mathematics' %}
+                    <span class="badge bg-primary text-white"><i class="fa-solid fa-calculator me-1"></i>Math</span>
+                    {% else %}
+                    <span class="badge bg-success text-white"><i class="fa-solid fa-language me-1"></i>Portuguese</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border">
+                        <i class="fa-regular fa-clock me-1 text-muted"></i>{{ student.study_hours_label }}
+                    </span>
+                </td>
+                <td class="text-center">{{ student.data.G1 }}</td>
+                <td class="text-center">{{ student.data.G2 }}</td>
+                <td class="text-center fw-bold">{{ student.data.G3 }}</td>
+                <td class="text-center">
+                    {% if student.grade_letter == 'A' %}<span class="badge bg-success">A</span>
+                    {% elif student.grade_letter == 'B' %}<span class="badge bg-info text-dark">B</span>
+                    {% elif student.grade_letter == 'C' %}<span class="badge bg-primary">C</span>
+                    {% elif student.grade_letter == 'D' %}<span class="badge bg-warning text-dark">D</span>
+                    {% else %}<span class="badge bg-danger">F</span>{% endif %}
+                </td>
+                <td class="text-center">
+                    {% if student.improvement > 0 %}
+                    <span class="text-success fw-bold"><i class="fa-solid fa-arrow-up me-1"></i>+{{ student.improvement }}</span>
+                    {% elif student.improvement < 0 %}
+                    <span class="text-danger fw-bold"><i class="fa-solid fa-arrow-down me-1"></i>{{ student.improvement }}</span>
+                    {% else %}
+                    <span class="text-muted">0</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if student.is_passing %}
+                    <span class="badge-stat badge-pass"><i class="fa-solid fa-check me-1"></i>Pass</span>
+                    {% else %}
+                    <span class="badge-stat badge-fail"><i class="fa-solid fa-xmark me-1"></i>Fail</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center py-4 text-muted">
+                    No student records match the selected filters.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Controls -->
+{% if total_pages > 1 %}
+<nav aria-label="Student records pagination">
+    <ul class="pagination pagination-sm justify-content-center">
+        <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('students', page=page-1, subject=current_subject, grade=current_grade, search=search_query) }}">Previous</a>
+        </li>
+        {% for p in range(1, total_pages + 1) %}
+            {% if p <= 8 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+            <li class="page-item {% if p == page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('students', page=p, subject=current_subject, grade=current_grade, search=search_query) }}">{{ p }}</a>
+            </li>
+            {% elif p == 9 and total_pages > 10 %}
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            {% endif %}
+        {% endfor %}
+        <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+            <a class="page-link" href="{{ url_for('students', page=page+1, subject=current_subject, grade=current_grade, search=search_query) }}">Next</a>
+        </li>
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

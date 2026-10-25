@@ -1,0 +1,82 @@
+{
+  "descriptive_stats": {
+    "count": 1044,
+    "mean": 11.341954022988507,
+    "median": 11.0,
+    "std": 3.8647958043836046,
+    "min": 0.0,
+    "max": 20.0,
+    "Q1": 10.0,
+    "Q3": 14.0,
+    "studytime_g3_correlation": 0.161628935202938
+  },
+  "grade_distribution": [
+    {
+      "grade_letter": "A",
+      "count": 122
+    },
+    {
+      "grade_letter": "B",
+      "count": 172
+    },
+    {
+      "grade_letter": "C",
+      "count": 216
+    },
+    {
+      "grade_letter": "D",
+      "count": 304
+    },
+    {
+      "grade_letter": "F",
+      "count": 230
+    }
+  ],
+  "study_hours_performance": [
+    {
+      "study_hours_label": "<2 hours",
+      "mean": 10.580441640378549,
+      "median": 11.0,
+      "std": 3.8914051423042193,
+      "count": 317
+    },
+    {
+      "study_hours_label": "2-5 hours",
+      "mean": 11.335984095427435,
+      "median": 11.0,
+      "std": 3.772467538683909,
+      "count": 503
+    },
+    {
+      "study_hours_label": "5-10 hours",
+      "mean": 12.493827160493828,
+      "median": 13.0,
+      "std": 3.618872055117096,
+      "count": 162
+    },
+    {
+      "study_hours_label": ">10 hours",
+      "mean": 12.274193548387096,
+      "median": 12.0,
+      "std": 4.223933971007726,
+      "count": 62
+    }
+  ],
+  "top_factors": {
+    "G2": 0.910743163058362,
+    "G1": 0.8091417205401177,
+    "failures": -0.3831452797182741,
+    "Medu": 0.20147169024090758,
+    "studytime": 0.161628935202938,
+    "Fedu": 0.15979604944494494,
+    "Dalc": -0.12964212480071227,
+    "age": -0.12528243256718036,
+    "Walc": -0.11574000357145992,
+    "traveltime": -0.102627117530913,
+    "goout": -0.0978772596884405,
+    "health": -0.08007863958257863,
+    "freetime": -0.06488967904803562,
+    "famrel": 0.05446105940363315,
+    "absences": -0.04567057698837366
+  }
+}

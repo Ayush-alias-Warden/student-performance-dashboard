@@ -1,0 +1,331 @@
+/* ============================================
+   Student Performance Dashboard — Custom CSS
+   ============================================ */
+
+:root {
+    --sidebar-width: 250px;
+    --sidebar-bg: #16213e;
+    --sidebar-hover: #1a1a2e;
+    --sidebar-active: #0f3460;
+    --accent-blue: #4e73df;
+    --accent-green: #1cc88a;
+    --accent-orange: #f6c23e;
+    --accent-red: #e74a3b;
+    --accent-purple: #8b5cf6;
+    --accent-teal: #36b9cc;
+    --card-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    --card-hover-shadow: 0 0.5rem 2rem rgba(58, 59, 69, 0.18);
+    --transition-speed: 0.25s;
+}
+
+/* ---------- Global ---------- */
+html, body {
+    height: 100%;
+    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    color: #fff;
+    z-index: 1030;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    transition: width var(--transition-speed);
+}
+
+.sidebar .brand {
+    padding: 1.5rem 1.25rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    white-space: nowrap;
+}
+
+.sidebar .brand i {
+    font-size: 1.4rem;
+    color: var(--accent-blue);
+}
+
+.sidebar .nav-menu {
+    list-style: none;
+    padding: 0.75rem 0;
+    margin: 0;
+    flex: 1;
+}
+
+.sidebar .nav-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: all var(--transition-speed);
+    border-left: 3px solid transparent;
+}
+
+.sidebar .nav-menu li a:hover {
+    color: #fff;
+    background: var(--sidebar-hover);
+    border-left-color: var(--accent-blue);
+}
+
+.sidebar .nav-menu li a.active {
+    color: #fff;
+    background: var(--sidebar-active);
+    border-left-color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.sidebar .nav-menu li a i {
+    font-size: 1.15rem;
+    width: 1.4rem;
+    text-align: center;
+}
+
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.35);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+}
+
+/* ---------- Main Content ---------- */
+.main-content {
+    margin-left: var(--sidebar-width);
+    padding: 2rem 2.5rem 3rem;
+    min-height: 100vh;
+}
+
+.page-header {
+    margin-bottom: 1.75rem;
+}
+
+.page-header h1 {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.page-header p {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* ---------- Stat Cards ---------- */
+.stat-card {
+    background: #fff;
+    border-radius: 0.6rem;
+    box-shadow: var(--card-shadow);
+    padding: 1.25rem 1.5rem;
+    border-left: 4px solid var(--accent-blue);
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.stat-card .stat-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    margin-bottom: 0.35rem;
+}
+
+.stat-card .stat-value {
+    font-size: 1.55rem;
+    font-weight: 800;
+    color: #1a1a2e;
+}
+
+.stat-card .stat-icon {
+    font-size: 2rem;
+    opacity: 0.25;
+}
+
+.stat-card.border-blue   { border-left-color: var(--accent-blue); }
+.stat-card.border-green  { border-left-color: var(--accent-green); }
+.stat-card.border-orange { border-left-color: var(--accent-orange); }
+.stat-card.border-red    { border-left-color: var(--accent-red); }
+.stat-card.border-purple { border-left-color: var(--accent-purple); }
+.stat-card.border-teal   { border-left-color: var(--accent-teal); }
+
+/* ---------- Chart Cards ---------- */
+.chart-card {
+    background: #fff;
+    border-radius: 0.6rem;
+    box-shadow: var(--card-shadow);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.chart-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.chart-card .chart-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 0.25rem;
+}
+
+.chart-card .chart-desc {
+    font-size: 0.82rem;
+    color: #6c757d;
+    margin-bottom: 0.75rem;
+}
+
+.chart-card img {
+    border-radius: 0.4rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    height: auto;
+}
+
+/* ---------- Section Cards ---------- */
+.section-card {
+    background: #fff;
+    border-radius: 0.6rem;
+    box-shadow: var(--card-shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-card h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* ---------- Tables ---------- */
+.table-container {
+    background: #fff;
+    border-radius: 0.6rem;
+    box-shadow: var(--card-shadow);
+    padding: 1.25rem;
+    overflow-x: auto;
+}
+
+.table-container table {
+    margin-bottom: 0;
+    font-size: 0.88rem;
+}
+
+.table-container thead th {
+    background: #16213e;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border: none;
+    position: sticky;
+    top: 0;
+}
+
+.table-container tbody tr:hover {
+    background: #e8f0fe;
+}
+
+/* ---------- Insight / Alert Boxes ---------- */
+.insight-box {
+    background: linear-gradient(135deg, #e8f0fe 0%, #f0f4ff 100%);
+    border-left: 4px solid var(--accent-blue);
+    border-radius: 0.4rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.insight-box strong {
+    color: var(--accent-blue);
+}
+
+/* ---------- Badge / Pill helpers ---------- */
+.badge-stat {
+    display: inline-block;
+    padding: 0.3em 0.75em;
+    border-radius: 50rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.badge-pass { background: #d4edda; color: #155724; }
+.badge-fail { background: #f8d7da; color: #721c24; }
+
+/* ---------- Footer ---------- */
+.main-footer {
+    padding: 1.5rem 0 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #adb5bd;
+    border-top: 1px solid #e9ecef;
+    margin-top: 2rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 70px;
+        overflow: visible;
+    }
+    .sidebar .brand span,
+    .sidebar .nav-menu li a span,
+    .sidebar-footer {
+        display: none;
+    }
+    .sidebar .brand {
+        justify-content: center;
+        padding: 1.25rem 0.5rem;
+    }
+    .sidebar .nav-menu li a {
+        justify-content: center;
+        padding: 0.85rem 0.5rem;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+    .sidebar .nav-menu li a.active {
+        border-left: none;
+        border-bottom-color: var(--accent-blue);
+    }
+    .main-content {
+        margin-left: 70px;
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        padding: 1rem 0.75rem;
+    }
+    .stat-card .stat-value {
+        font-size: 1.25rem;
+    }
+}
