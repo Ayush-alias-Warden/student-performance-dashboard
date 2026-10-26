@@ -1,5 +1,7 @@
 # 🎓 Student Performance & Study-Hours Analytics Dashboard
 
+> 🌐 **Live Web Application**: [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com)
+
 An educational data analytics web application and CLI pipeline developed for undergraduate sophomore Python curricula. The system investigates student assessment scores and reported study hours using anonymized records from secondary schools, visibly integrating all six course outcomes (**CO1–CO6**) and Bloom's taxonomy cognitive levels (**BL2–BL6**).
 
 ---

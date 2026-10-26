@@ -1,5 +1,7 @@
 # 🎓 Student Performance & Study-Hours Project: Peer Walkthrough Guide
 
+> 🌐 **Try the Live Website Right Now**: [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com)
+
 Hey everyone! 👋  
 Here is a straightforward, friendly explainer of what we built, what the data actually discovered, and how to test and run the project yourself. Use this guide to quickly understand the project before presentations, viva sessions, or group discussions.
 

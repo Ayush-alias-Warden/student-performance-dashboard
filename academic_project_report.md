@@ -4,6 +4,7 @@
 **Topic**: Option 3 — Student Performance and Study-Hours Dashboard  
 **Dataset**: UCI Machine Learning Repository — Student Performance Dataset (Cortez & Silva, 2008)  
 **Execution Environment**: Python 3.9+ | Flask | NumPy | Pandas | Matplotlib  
+**Live Production Web Deployment**: [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com)  
 
 ---
 
@@ -12,8 +13,8 @@
 Educational outcomes are frequently assumed to be directly proportional to reported study time. This project systematically investigates the empirical relationship between self-reported weekly study hours and final secondary school examination scores ($G3$, on a 0–20 scale) across **1,044 student records** spanning Mathematics ($N=395$) and Portuguese Language ($N=649$).
 
 The completed software delivers a dual-interface application:
-1. **Interactive Web Dashboard**: Built with Flask, Bootstrap 5, and Matplotlib.
-2. **Automated CLI Pipeline**: A terminal runner with formatted tabular reports and JSON export.
+1. **Live Production Web Dashboard**: Deployed publicly on the cloud at [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com), built with Flask, Bootstrap 5, and Matplotlib.
+2. **Automated CLI Pipeline**: A terminal runner with formatted tabular reports and JSON export (`python main.py`).
 
 Every component is visibly structured around the six prescribed course outcomes (**CO1 to CO6**) and provides concrete evidence for Bloom's Revised Taxonomy levels from **BL2 (Explain)** through **BL6 (Create)**.
 
