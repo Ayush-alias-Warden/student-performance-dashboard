@@ -1,8 +1,26 @@
 # 🎓 Student Performance & Study-Hours Analytics Dashboard
 
-> 🌐 **Live Web Application**: [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com)
+> 🌐 **Live Web Application**: [https://student-performance-dashboard-z26x.onrender.com](https://student-performance-dashboard-z26x.onrender.com)  
+> 📄 **Official Academic Lab Report**: [PDF Report (`IEM_Python_Lab_Report_Final.pdf`)](./IEM_Python_Lab_Report_Final.pdf) | [Word Document (`IEM_Python_Lab_Report_Final.docx`)](./IEM_Python_Lab_Report_Final.docx) | [Full Report Markdown](./PROJECT_REPORT_IEM_KOLKATA.md)
 
 An educational data analytics web application and CLI pipeline developed for undergraduate sophomore Python curricula. The system investigates student assessment scores and reported study hours using anonymized records from secondary schools, visibly integrating all six course outcomes (**CO1–CO6**) and Bloom's taxonomy cognitive levels (**BL2–BL6**).
+
+---
+
+## 👥 Academic Project Team & Faculty Supervisor
+
+**Institution**: Institute of Engineering & Management (IEM), Kolkata  
+**Department**: Department of Electronics & Communication Engineering  
+**Degree**: Bachelor of Technology (B.Tech)  
+**Subject**: Python Programming Laboratory  
+**Faculty Supervisor**: **Prof. Indranil Basu**  
+
+| Team Member Name | Class Roll No. | University Enrollment No. |
+| :--- | :---: | :---: |
+| **Hritam Basak** | 118 | 12025052003127 |
+| **Ayush Kumar Singh** | 116 | 12025052003125 |
+| **Abhishek Kumar** | 123 | 12025052003132 |
+| **Sutanu Biswas** | 121 | 12025052003130 |
 
 ---
 
