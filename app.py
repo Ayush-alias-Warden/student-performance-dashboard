@@ -32,7 +32,12 @@ import models
 import plots
 
 # Initialise Flask application
-app = Flask(__name__)
+_BASE_DIR = Path(__file__).resolve().parent
+app = Flask(
+    __name__,
+    static_folder=str(_BASE_DIR / "static"),
+    template_folder=str(_BASE_DIR / "templates"),
+)
 app.config["SECRET_KEY"] = "academic-student-dashboard-2026"
 
 # Load and validate dataset on startup
